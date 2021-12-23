@@ -8,13 +8,20 @@ public class Main {
 
     public static void main(String[] args) {
         // write your code here
-        road(); // создаем заданную стоимость пунктов пропуска.
         int[] points = road(); // присваиваем в массив.
+
+        int x = 0; // проверяем что сумма за все оплаты больше 55.
+        for (int i = 0; i < points.length; i++) {
+            x += points[i];
+        }
+        System.out.println("Общая стоимость проезда: " + x);
+
         System.out.println("Сегодняшняя стоимость на пунктах пропусков: ");
         for (int i = 0; i < points.length; i++) {
             System.out.print(points[i] + ", ");
         }
-        List<Integer[]> population = new ArrayList<>();
+
+        List<Integer[]> population = new ArrayList<>(); // создаем популяцию.
         for (int i = 0; i < 10000; i++) {
             population.add(driver());
         }
@@ -27,7 +34,8 @@ public class Main {
             array[i] = (int) (Math.random() * 10 + 1);
             counter += array[i];
             if (i == 9 && counter <= 55) {
-                road();
+                i = 0;
+                counter = 0;
             }
         }
         return array;
@@ -43,5 +51,3 @@ public class Main {
         return array;
     }
 }
-
-
