@@ -7,28 +7,109 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        // write your code here
-        int[] points = road(); // присваиваем в массив.
+        // создаем дорогу с пропусками
 
-        int x = 0; // проверяем что сумма за все оплаты больше 55.
-        for (int i = 0; i < points.length; i++) {
-            x += points[i];
-        }
-        System.out.println("Общая стоимость проезда: " + x);
+        Integer[] road = road();
 
-        System.out.println("Сегодняшняя стоимость на пунктах пропусков: ");
-        for (int i = 0; i < points.length; i++) {
-            System.out.print(points[i] + ", ");
-        }
+        // создаем популяцию водителей
 
-        List<Integer[]> population = new ArrayList<>(); // создаем популяцию.
-        for (int i = 0; i < 10000; i++) {
+        List<Integer[]> population = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
             population.add(driver());
+        }
+
+        //Генерация нового поколения и ГА
+
+        newGeneration((ArrayList<Integer[]>) population, road);
+
+        fitnesFunction((newGeneration((ArrayList<Integer[]>) population, road)), road);
+
+        // вывод итогов
+
+        System.out.println("Лучшей комбинацией для проезда будет:");
+        for (int i = 0; i < newGeneration((ArrayList<Integer[]>) population, road).size(); i++) {
+            for (int j = 0; j < 10; j++) {
+                System.out.print(newGeneration((ArrayList<Integer[]>) population, road).get(i)[j] + ". ");
+            }
+            System.out.println();
+        }
+    }
+    public static List<Integer[]> newGeneration(ArrayList<Integer[]> population, Integer[] road) {
+        if (population.size() == 1) {
+            return population;
+        }
+        List<Integer[]> generation = new ArrayList<>();
+        Integer[] newDriwer = new Integer[10];
+        for (int i = 0; i < population.size() - 1; i++) {
+            generation.add(newDriwer = new Integer[10]);
+        }
+        for (int i = 0; i < population.size() - 1; i++) {
+            int y = 0;
+            int x = 0;
+            for (int j = 0; j < 10; j++) {
+                y = population.get(i)[j] - road[j];
+                x = population.get(i + 1)[j] - road[j];
+                if (Math.abs(y) < Math.abs(x)) {
+                    generation.get(i)[j] = population.get(i)[j];
+                } else {
+                    generation.get(i)[j] = population.get(i + 1)[j];
+                }
+            }
+        }
+        for (int i = 0; i < generation.size(); i++) {
+            mutation(generation.get(i));
+        }
+
+        return newGeneration((ArrayList<Integer[]>) generation, road);
+    }
+
+    public static void mutation(Integer[] array) {
+        int[] testArray = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        for (int i = 0; i < testArray.length; i++) {
+            int count = 0;
+            for (int j = 0; j < array.length; j++) {
+                if (testArray[i] == array[j]) {
+                    count++;
+                }
+            }
+            if (count == 0) {
+                int x = testArray[i];
+                for (int j = 0; j < array.length; j++) {
+                    int count1 = 0;
+                    for (int k = 0; k < array.length; k++) {
+                        if (array[j] == array[k]) {
+                            count1++;
+                            if (count1 > 1) {
+                                array[j] = testArray[i];
+                            }
+                        }
+
+                    }
+                }
+            }
         }
     }
 
-    public static int[] road() {
-        int[] array = new int[10];
+    public static int fitnesFunction(List<Integer[]> a, Integer[] b) {
+        int z = 0;
+        for (int i = 0; i < a.size(); i++) {
+            for (int j = 0; j < 10; j++) {
+                int y = 0;
+                y += a.get(i)[j] - b[j];
+                if (y > 0) {
+                    y = 0;
+                }
+                z += y;
+            }
+            System.out.print(z + " ");
+            z = 0;
+        }
+        System.out.println();
+        return z;
+    }
+
+    public static Integer[] road() {
+        Integer[] array = new Integer[10];
         int counter = 0;
         for (int i = 0; i < array.length; i++) {
             array[i] = (int) (Math.random() * 10 + 1);
@@ -38,6 +119,16 @@ public class Main {
                 counter = 0;
             }
         }
+        int x = 0;
+        for (int i = 0; i < array.length; i++) {
+            x += array[i];
+        }
+        System.out.println("Общая стоимость проезда: " + x);
+        System.out.println("Сегодняшняя стоимость на пунктах пропусков: ");
+        for (int i = 0; i < array.length; i++) {
+            System.out.print(array[i] + ". ");
+        }
+        System.out.println();
         return array;
     }
 
