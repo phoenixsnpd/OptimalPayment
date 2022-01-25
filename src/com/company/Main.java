@@ -19,13 +19,21 @@ public class Main {
         }
 
         //Генерация нового поколения и ГА
-
+// You create population and right after that you began to multiply them. Why?
+// Right flow should be like:
+//        1) Create population
+//        2) Evaluate and sort his members using fitness function
+//        3) Take first half (with the highest value of evaluation) of population
+//        4) Multiply them
+//        5) Add mutation factor during multiplying
+//        6) Back to step 2
         newGeneration((ArrayList<Integer[]>) population, road);
 
         fitnesFunction((newGeneration((ArrayList<Integer[]>) population, road)), road);
 
         // вывод итогов
 
+//      If I understood correct, on that part you shuffle you previous results twice. Because of that output results is not valid.
         System.out.println("Лучшей комбинацией для проезда будет:");
         for (int i = 0; i < newGeneration((ArrayList<Integer[]>) population, road).size(); i++) {
             for (int j = 0; j < 10; j++) {
@@ -41,6 +49,7 @@ public class Main {
         List<Integer[]> generation = new ArrayList<>();
         Integer[] newDriwer = new Integer[10];
         for (int i = 0; i < population.size() - 1; i++) {
+//            just pass newDriver variable generation.add(newDriwer);
             generation.add(newDriwer = new Integer[10]);
         }
         for (int i = 0; i < population.size() - 1; i++) {
@@ -60,9 +69,11 @@ public class Main {
             mutation(generation.get(i));
         }
 
+// Avoid using recursive calls
         return newGeneration((ArrayList<Integer[]>) generation, road);
     }
-
+//    Terrible naming I have understood nothing from this part of code
+//    avoid x,y,z,a,b etc. variable names
     public static void mutation(Integer[] array) {
         int[] testArray = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         for (int i = 0; i < testArray.length; i++) {
@@ -90,6 +101,10 @@ public class Main {
         }
     }
 
+//    Terrible naming I have understood nothing from this part of code
+//    avoid x,y,z,a,b etc. variable names
+//    What does return int value mean?
+
     public static int fitnesFunction(List<Integer[]> a, Integer[] b) {
         int z = 0;
         for (int i = 0; i < a.size(); i++) {
@@ -108,6 +123,7 @@ public class Main {
         return z;
     }
 
+//    This both methods are OK, in general.
     public static Integer[] road() {
         Integer[] array = new Integer[10];
         int counter = 0;
